@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 
 const App = () => {
   const user = useSelector((state) => state.user.currentUser);
+  const register = useSelector((state) => state.user.currentRegister);
   return (
     <Router>
       <Switch>
