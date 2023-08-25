@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import {register} from "../redux/apiCalls"
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const Container = styled.div`
   width: 100vw;
@@ -52,41 +53,53 @@ const Button = styled.button`
   background-color: teal;
   color: white;
   cursor: pointer;
+  &:disabled {
+    color: green;
+    cursor: not-allowed;
+  }
+`;
+
+const Error = styled.span`
+  color: red;
 `;
 
 const Register = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const dispatch = useDispatch();
+  const { isFetching, error } = useSelector((state) => state.user);
 
   const handleClick = (e) => {
     e.preventDefault();
-    register({ username, password, email });
+    register(dispatch, { username, password, email });
   };
   return (
     <Container>
       <Wrapper>
         <Title>CREATE AN ACCOUNT</Title>
         <Form>
-          <Input placeholder="name" />
-          <Input placeholder="last name" />
           <Input 
           placeholder="username"
           onChange={(e) => setUsername(e.target.value)}
           />
           <Input 
           placeholder="email"
+          type="email"
+          required="true"
           onChange={(e) => setEmail(e.target.value)} />
           <Input 
           placeholder="password"
+          type="password"
           onChange={(e) => setPassword(e.target.value)}
           />
-          <Input placeholder="confirm password" />
+          {error && <Error>Something went wrong...</Error>}
           <Agreement>
             By creating an account, I consent to the processing of my personal
             data in accordance with the <b>PRIVACY POLICY</b>
           </Agreement>
-          <Button onClick={handleClick}>CREATE</Button>
+          <Button onClick={handleClick} disabled={isFetching}>CREATE</Button>
+          
         </Form>
       </Wrapper>
     </Container>
